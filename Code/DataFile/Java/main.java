@@ -5,13 +5,21 @@ import java.io.IOException;
 class main{
 	
 	public static void main(String[] args){
-		int maxX=8,maxY=8, bombs=10;
-		int table[][]=new int[maxX+1][maxY+1];
-		int bombplace[][]=new int[maxX+1][maxY+1];
 		Scanner sc=new Scanner(System.in);
+		int maxX=8,maxY=8, bombs=10;
+		System.out.print("Number of rows: ");maxY=sc.nextInt();
+		System.out.print("Number of collumns: ");maxX=sc.nextInt();
+		System.out.print("Number of mines: "); bombs=sc.nextInt();
+		clrscr();
+		maxY-=1;
+		maxX-=1;
+		int table[][]=new int[maxX+1][maxY+1];
+		int map[][]=new int[maxX+1][maxY+1];
+		int hidemap[][]=new int[maxX+1][maxY+1];
+		int bombplace[][]=new int[maxX+1][maxY+1];
+		int x,y,c;
 		
 		
-		while(true){
 		for(int i=0;i<maxX+1;i++){
 			for(int j=0;j<maxY+1;j++){
 				table[i][j]=0;
@@ -21,6 +29,18 @@ class main{
 		for(int i=0;i<maxX+1;i++){
 			for(int j=0;j<maxY+1;j++){
 				bombplace[i][j]=0;
+			}
+		}
+		
+		for(int i=0;i<maxX+1;i++){
+			for(int j=0;j<maxY+1;j++){
+				map[i][j]=0;
+			}
+		}
+		
+		for(int i=0;i<maxX+1;i++){
+			for(int j=0;j<maxY+1;j++){
+				hidemap[i][j]=0;
 			}
 		}
 	
@@ -49,41 +69,145 @@ class main{
 		// System.out.println(bombX+":"+bombY);
 		}while(!go);
 		}
+		
 		for(int i=0;i<maxX+1;i++){
 			for(int j=0;j<maxY+1;j++){
 				if(table[i][j]!=2){
 					int bombn=ScanBomb(i,j,table,maxX,maxY);
-					if(bombn!=0)
-						System.out.print(bombn+" ");
-					else
-						System.out.print("  ");
+					if(bombn!=0){
+						//System.out.print(bombn+" ");
+						map[i][j]=bombn;
+					}
+					else{
+						//System.out.print("  ");
+						map[i][j]=0;
+					}
 				}
-				else
-					System.out.print("M ");
+				else{
+					//System.out.print("M ");
+					map[i][j]=9;
+				}
 			}
-			System.out.println();
+			//System.out.println();
 		}
-		System.out.println();
+		//System.out.println();
+		
+		while(true){
+		
+		
+		// for(int i=0;i<maxX+1;i++){
+			// for(int j=0;j<maxY+1;j++){
+				// if(map[i][j]==9)
+					// System.out.print("M ");
+				// else if(map[i][j]==0)
+					// System.out.print("  ");
+				// else
+				// System.out.print(map[i][j]+" ");	
+			// }
+			
+			// System.out.println();
+		// }
+		// System.out.println();
+		
+		
+		// for(int i=0;i<maxX+1;i++){
+			// for(int j=0;j<maxY+1;j++){
+			// //	System.out.print(table[i][j]);
+				// if(table[i][j]==0)
+					// System.out.print(". ");
+				// else if(table[i][j]==1)
+					// System.out.print("o ");
+				// else if(table[i][j]==2)
+				    // System.out.print("! ");
+			// }
+			// System.out.println();
+		// }
 		
 		for(int i=0;i<maxX+1;i++){
 			for(int j=0;j<maxY+1;j++){
-			//	System.out.print(table[i][j]);
-				if(table[i][j]==0)
-					System.out.print(". ");
-				else if(table[i][j]==1)
-					System.out.print("o ");
-				else if(table[i][j]==2)
-				    System.out.print("! ");
+				if(hidemap[i][j]==0){
+				System.out.print("[]");
+				}
+				else if(hidemap[i][j]==2){
+					System.out.print("F ");
+				}
+				else if(hidemap[i][j]==1){
+				System.out.print(map[i][j]+" ");
+				}
 			}
 			System.out.println();
 		}
-		System.out.println();
-		System.out.print("Your Answer: ");
-		String answer=sc.nextLine();
+		
+	    System.out.println();
+		
+		System.out.print("X: ");
+		x=sc.nextInt();
+		System.out.print("Y: ");
+		y=sc.nextInt();
+		System.out.print("Flag/UnFlag 1, Dig 2: ");
+		c=sc.nextInt();
+		if(c!=2)c=2;
+		else if(c==2)c=1;
+
+		x=clamp(x,maxX);
+		y=clamp(y,maxY);
+		
+       
 		
 		System.out.println("\n\n");
 		clrscr();
+		
+		if(c!=2){
+		if(map[x][y]!=9){
+			hidemap[x][y]=1;
 		}
+		else if(map[x][y]==9){
+			break;
+		}
+		}else if(c==2){
+			if(hidemap[x][y]==0)
+			hidemap[x][y]=2;
+			else {
+				if(hidemap[x][y]!=1)
+				hidemap[x][y]=0;
+			}
+		}
+		
+	}
+	
+		
+		for(int i=0;i<maxX+1;i++){
+			for(int j=0;j<maxY+1;j++){
+				if(map[i][j]==9){
+				hidemap[i][j]=1;
+				}
+			}
+		}
+		
+		for(int i=0;i<maxX+1;i++){
+		for(int j=0;j<maxY+1;j++){
+			if(hidemap[i][j]==0){
+			System.out.print("[]");
+			}
+			else if(hidemap[i][j]==1){
+			if(map[i][j]!=9)
+			System.out.print(map[i][j]+" ");
+			else if(map[i][j]==9){
+				System.out.print("M ");
+			}
+			}
+		    if(hidemap[i][j]==2){
+				if(map[i][j]!=9)
+				System.out.print("X ");
+				else if(map[i][j]==9)
+				System.out.print("F ");
+			}
+		}
+		System.out.println();
+		}
+		
+		System.out.println("\nYou Lose\n");
+		
 	}
 	public static int ScanBomb(int a,int b,int table[][],int maxX,int maxY){
 		int bombNumber=0;
@@ -110,6 +234,9 @@ class main{
 		if(bm>=0)
 		if(table[a][bm]==2)bombNumber++;
 		return bombNumber;
+	}
+	public static int clamp(int x, int max){
+		return x>max?max:x;
 	}
 	public static int getRandomIntBetweenRange(int min, int max){
 		Random random = new Random();
